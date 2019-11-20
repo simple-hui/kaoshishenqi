@@ -7,10 +7,10 @@
           <popup-radio title="题目类型" :options="titleOptionName" v-model="titleTypeName"></popup-radio>
         </group>
         <group>
-          <x-input title="关键字" v-model="searchInput"></x-input>
+          <x-input title="关键字" v-model="searchInput" @on-blur="blur" @on-focus="focusInput" id="talkcontentiphone"></x-input>
         </group>
       </div>
-      <div class="forContent">
+      <div class="forContent" :style="`min-height:${num}px;`">
         <div v-for="item in resultArr" :key="item.title">
           <p>题目：{{ item.content }}</p>
           <p>答案：{{ item.ans }}</p>
@@ -43,6 +43,8 @@ export default {
       titleOptionName: [],
       searchInput: '',
       resultArr: [],
+      isReset: true,
+      num: 0,
     }
   },
   watch: {
@@ -64,7 +66,8 @@ export default {
           this.resultArr = [];
         }
       }
-    }
+    },
+    
   },
   computed: {
     currentCourse() {
@@ -85,6 +88,8 @@ export default {
         return 'tiankong';
       } else if ( this.titleTypeName === '问答' ) {
         return 'wenda';
+      } else {
+        return '';
       }
     },
 
@@ -92,6 +97,8 @@ export default {
   methods: {
     tabChange() {
       this.titleOption = [];
+      this.titleTypeName = '';
+      this.searchInput = '';
       if ( this.course === 0 ) {
         // 模拟电路
         // 获取title
@@ -106,7 +113,32 @@ export default {
         }
         this.titleOptionName = ['判断','单选','多选','填空','问答'];
       }
+    },
+    blur() {
+      window.scroll(0,0);
+      document.body.scrollTop = 0;
+    },
+    focusInput() {
+      document.getElementById('talkcontentiphone').scrollIntoView(true);
     }
+  },
+  mounted() {
+    // console.log();
+    this.num = this.$refs.viewBox.$el.clientHeight + 1;
+    document.body.addEventListener('focusin', () => {
+      // 软键盘弹出的事件处理
+      this.isReset = false
+    })
+    document.body.addEventListener('focusout', () => {
+      // 软键盘收起的事件处理
+      this.isReset = true
+      setTimeout(() => {
+        // 当焦点在弹出层的输入框之间切换时先不归位
+        if (this.isReset) {
+         window.scroll(0, 0) // 失焦后强制让页面归位
+        }
+      }, 300)
+    })
   },
   components: {
     Divider, Tabbar, TabbarItem, ViewBox, Group, PopupRadio, XInput
@@ -118,6 +150,9 @@ export default {
     height: 100%; width: 100%; overflow-y: scroll; -webkit-overflow-scrolling: touch;
     .weui-tab__panel {
       padding-top: 140px;
+    }
+    .weui-tabbar {
+      position: fixed;
     }
     .headTop {
       position: fixed; left: 0; top: 0; background: #F6F6F6; width: 100%;
