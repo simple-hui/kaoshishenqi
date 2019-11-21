@@ -14,7 +14,9 @@
         <div v-for="item in resultArr" :key="item.title">
           <p>题目：{{ item.content }}</p>
           <p>答案：{{ item.ans }}</p>
-          <p v-if="item.ans === 'A' || item.ans === 'B' || item.ans === 'C' || item.ans === 'D' ">答案内容: {{ item[item.ans] }}</p>
+          <p v-if="titleType === 'danxuan' || titleType === 'duoxuan'">
+            答案内容: <span v-for="items in item.ans.split('|')" class="resultContent">{{ item[items] }}<span>,</span></span>
+          </p>
         </div>
       </div>
       <!-- 底部导航 -->
@@ -156,6 +158,13 @@ export default {
     }
     .headTop {
       position: fixed; left: 0; top: 0; background: #F6F6F6; width: 100%;
+    }
+    .resultContent {
+      &:last-child {
+        > span {
+          display: none;
+        }
+      }
     }
     .forContent {
       padding: 6px 10px; line-height: 1.6;
