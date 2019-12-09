@@ -27,6 +27,9 @@
         <tabbar-item>
           <span slot="label">数字电路</span>
         </tabbar-item>
+        <tabbar-item>
+          <span slot="label">数据库理论</span>
+        </tabbar-item>
       </tabbar>
     </view-box>
   </div>
@@ -39,7 +42,7 @@ export default {
   name: 'home',
   data () {
     return {
-      course: 0, // 0表示模拟电路  1 表示数字电路
+      course: 0, // 0表示模拟电路  1 表示数字电路 3表示数据库理论
       titleTypeName: '', // 题目类型
       titleOption: [], // 题目可选类型
       titleOptionName: [],
@@ -75,8 +78,10 @@ export default {
     currentCourse() {
       if ( this.course === 0 ) {
         return 'mndl'
-      } else {
+      } else if ( this.course === 1 ) {
         return 'szdl'
+      } else if ( this.course === 2 ) {
+        return 'sjkyl'
       }
     },
     titleType () {
@@ -114,6 +119,11 @@ export default {
           this.titleOption.push(i)
         }
         this.titleOptionName = ['判断','单选','多选','填空','问答'];
+      } else if ( this.course === 2 ) {
+        for ( let i in answer['sjkyl'] ) {
+          this.titleOption.push(i)
+        }
+        this.titleOptionName = ['单选']
       }
     },
     blur() {
